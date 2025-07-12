@@ -1,4 +1,6 @@
 📝 Nano Cheat Sheet — Terminal Text Editor for WSL
+Set the configuration
+nano ~/.bashrc
 
 🧭 Launching Nano
 nano filename.py         # Open or create Python script
