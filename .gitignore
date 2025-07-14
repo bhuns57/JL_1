@@ -1,1 +1,60 @@
 .ipynb_checkpoints/
+git rm --cached *.xlsx
+git rm --cached *.xls
+git rm --cached *.xlsm
+*.xlsx
+*.xls
+*.xlsm
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+*.swp
+# Pytest and tox
+.tox/
+.pytest_cache/
+
+# Coverage reports (optional)
+# Uncomment if you want to ignore them
+# coverage/
+# *.lcov
+#
+# Conda/venv
+.venv/
+env/
+venv/
+
+*.xlsx
+*.xls
+*.xlsm
+~$*
+
+!important_template.xlsx
+
+# macOS & Windows
+.DS_Store
+Thumbs.db
+
+# VS Code & JetBrains
+.vscode/
+.idea/
+*.code-workspace
+*.iml
+
+.env
+*.key
+*.pem
+*.crt
+*.db
+
+!.env.template
+!config.sample.json
