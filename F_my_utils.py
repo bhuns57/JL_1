@@ -1,8 +1,9 @@
-############## DEF FUNCTIONS SAVED AS A PY MODULE ###################
+############## DEF FUNCTIONS SAVED AS A PY MODULE ##################
 import pandas as pd
 from openpyxl import load_workbook, Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
+
 
 def load_df_with_formulas(file_name="xl_tbl.xlsx", sheet_name="xl_tbl"):
     """
