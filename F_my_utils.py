@@ -1,25 +1,15 @@
 ############## DEF FUNCTIONS SAVED AS A PY MODULE ##################
 import pandas as pd
 from openpyxl import load_workbook, Workbook
-from openpyxl.worksheet.table import Table, TableStyleInfo
+from openpyxl.worksheet.table 
+import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
-# ------------------------------------------------------------------
+# ---------------xl_df---------------------------------------------------
+These require that the xl_tbl be made variable 
+bn=base_name for each xl_data_file
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###############################excel files with formulas
 def load_df_with_formulas(file_name="xl_tbl.xlsx", sheet_name="xl_tbl"):
     """
     Reads an Excel sheet, preserving formulas and structure.
@@ -40,11 +30,10 @@ def load_df_with_formulas(file_name="xl_tbl.xlsx", sheet_name="xl_tbl"):
             else:
                 row_data.append(None)
         data.append(row_data)
-
     headers = data[0]
     df = pd.DataFrame(data[1:], columns=headers)
     return df
-
+###########################excel files with formulas
 def write_df_with_formulas(df, file_name="xl_tbl.xlsx", sheet_name="xl_tbl", table_name="xl_tbl"):
     """
     Writes a DataFrame to Excel, preserving formula strings.
@@ -77,7 +66,7 @@ def write_df_with_formulas(df, file_name="xl_tbl.xlsx", sheet_name="xl_tbl", tab
     ws.add_table(table)
 
     wb.save(file_name)
-
+###########################excel files with formulas
 
 
 
