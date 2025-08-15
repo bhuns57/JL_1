@@ -1,0 +1,37 @@
+Your loading functions helped greatly. Extending that technique I am trying to make a structure that can handle a large quanity of data reliably and logically with consitant memberable names.
+    I start with a data array where the first row conta the column names. It is named by a unique string called "ubn". (that accronym stands for unique base name. the file that stores it is called "xl_" + ubn + ".csv". When it is loaded with the data from the csl file, it is made into a data frame which named "df_"+ ubn.
+###########################################################################################################################    
+xl_ada
+xl_ubu
+
+    then than that df_ubn dataframe will be zipped together with other df_ubn of equal len to make a master dictionary called "nmd_dict". the nmdmstr_dict will store the names of ubu in key1 and the values in key2 and the dtype in key3
+    
+    It will be called from a dict where it is placed as 
+
+ada_init(ada)   
+    dict_name = ada + "dict"
+    dict_namet {
+        name: = ubu_list[ubu]          # ubu are the col heads read from file array and put in a list
+        data: = list[ubu[list]]        # list of the data under each head in the file array
+        return dict_name, ada+abu_lst       
+
+    
+sda is the variable that represents a simple data array[sda] with a name that has a unique recognizeble name for array 2D df 4 dicts.
+The goal is to make a function(ada) and an array in a file named ="xl"+ada+".csv"
+
+this project has many different sda and all have a similar structure and identical length, The sda  will be created using functions with sda acting as a variable.
+
+the function will also make a list of all the data in each col in the array.  
+it will then make a df using head if each coll as the name and the list of data to complete as the data.
+it will then create a dict named ada + "dict" with a key for the name list and key for the  data list.
+
+
+
+this also makes a list of all the data held just below the head in each col of the array. 
+
+ubn is a variable that represent a list of data with a name that has a unique recognizeble name.
+this project has many different ubn but have a similar structure and will be created using functions with ubn acting as a variable.
+
+is a variable  is [sda]  is  
+data  will be stored as simple data arrays[sda] as a single sheet csv work sheet with a file name = xl_sda.csv_. ws name = 
+sda  = "meanful str" It is meaning full and unique.
