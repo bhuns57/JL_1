@@ -1,0 +1,25 @@
+📝 Nano Cheat Sheet — Terminal Text Editor for WSL
+Set the configuration
+nano ~/.bashrc
+
+🧭 Launching Nano
+nano filename.py         # Open or create Python script
+nano ~/.bashrc           # Edit Bash profile
+
+💾 Saving and Exiting
+Ctrl + O                 # Save the file
+Enter                    # Confirm filename
+Ctrl + X                 # Exit Nano
+
+✂️ Editing Shortcuts
+Ctrl + K                 # Cut current line
+Ctrl + U                 # Paste last cut line
+Ctrl + W                 # Search within file
+Ctrl + \                 # Search & replace
+Ctrl + C                 # Show cursor location
+Ctrl + G                 # Help menu
+
+📌 WSL & Jupyter Tips
+Shift + Ctrl + V         # Paste into Nano
+Right-click              # Paste in most terminals
+Always Ctrl + O before X to avoid losing changes
