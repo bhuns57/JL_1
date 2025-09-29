@@ -52,3 +52,16 @@ def array_to_dt_row_dict(array):
 
     return dt_row_dict
 # =====================================================================
+# make_update_dt_row_dict
+def make_update_dt_row_dict(dt_row_dict, dvt):
+    start_date, end_date = dvt
+    update_row_dict = {}
+
+    for date_key in dt_row_dict:  # ✅ use dt_row_dict here
+        if start_date <= date_key <= end_date:
+            update_row_dict[date_key] = {col: '' for col in dt_row_dict[date_key]}  # also fix xrow_dict if needed
+
+    return update_row_dict
+
+# =========================================================================================
+
