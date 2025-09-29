@@ -1,5 +1,3 @@
-
-# def read_csv_to_array(filepath)
 from pathlib import Path
 import csv
 import sys_funcs
@@ -15,6 +13,17 @@ import os
 import sys
 import re
 #=======================================================
+def clean_wsl_path(raw_path):                            #  raw_path = "bnm.csv"
+    """
+    Cleans and normalizes a WSL path for safe use in file operations.
+    Returns a pathlib.Path object.
+    """
+    raw_path = raw_path.strip().replace('\\', '/')
+    raw_path = re.sub(r'/+', '/', raw_path)
+    return Path(raw_path)
+
+#==========================================================================
+
 # sys_funcs.py
 import csv
 from pathlib import Path
@@ -29,32 +38,8 @@ def read_csv_to_array(filepath):
     return array
 
 
-
-
-
-def xread_csv_to_array(filepath):
-    """Reads a CSV file and returns a 2D array (list of lists)."""
-    path = Path(filepath)
-    if not path.exists():
-        raise FileNotFoundError(f"CSV file not found: {path}")
-
-    with path.open(newline='', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        array = [row for row in reader if row]  # skip empty rows
-    return array
-
 #=====================================================================
 
-def clean_wsl_path(raw_path):
-    """
-    Cleans and normalizes a WSL path for safe use in file operations.
-    Returns a pathlib.Path object.
-    """
-    raw_path = raw_path.strip().replace('\\', '/')
-    raw_path = re.sub(r'/+', '/', raw_path)
-    return Path(raw_path)
-
-#==========================================================================
 # array_to_dt_row_dict(array) THIS IS THE TOTAL DATA FOR THIS "bnm"
 def array_to_dt_row_dict(array):
     header = array[0][1:]  # Skip 'dtv', keep other column names
