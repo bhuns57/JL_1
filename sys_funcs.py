@@ -67,7 +67,7 @@ def make_blnk_update_row_dict(dt_row_dict, dvt):
 #Using the input function enter values to update to the update_row_dict to later change the storage dt_row_dish
 def update_serial_values(blnk_update_dt_row_dict):
     update_dt_row_dict = blnk_update_dt_row_dict
-    print("Enter a number for each serial, or press Enter to skip.\n")
+    print("Enter a number for each serial number s000.... , or press Enter to skip.\n")
     for day, serials in update_dt_row_dict.items():
         print(f"\nDay: {day}")
         for serial in serials:
@@ -80,6 +80,7 @@ def update_serial_values(blnk_update_dt_row_dict):
                 except ValueError:
                     print("  Invalid input. Skipped.")
     print("\nUpdate complete.")
+ 
     return update_dt_row_dict
 
 # =========================================================
