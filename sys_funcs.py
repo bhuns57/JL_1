@@ -55,31 +55,33 @@ def array_to_dt_row_dict(array):
 # update_dt_row_dict  Makes the empty dictionary to fill
 def make_blnk_update_row_dict(dt_row_dict, dvt):
     start_date, end_date = dvt
-    update_row_dict = {}
+    blnk_update_dt_row_dict = {}
 
     for date_key in dt_row_dict:  # ✅ use dt_row_dict here
         if start_date <= date_key <= end_date:
-            update_row_dict[date_key] = {col: '' for col in dt_row_dict[date_key]}  # also fix xrow_dict if needed
-
+            blnk_update_dt_row_dict [date_key] = {col: '' for col in dt_row_dict[date_key]}  # also fix xrow_dict if needed
+    update_row_dict = blnk_update_dt_row_dict 
     return update_row_dict
 
 # input function =========================================================================================
-def update_serial_values(update_dt_row_dict):
-    print("Enter a number for each serial, or press Enter twice to skip.\n")
+#Using the input function enter values to update to the update_row_dict to later change the storage dt_row_dish
+def update_serial_values(blnk_update_dt_row_dict):
+    update_dt_row_dict = blnk_update_dt_row_dict
+    print("Enter a number for each serial, or press Enter to skip.\n")
     for day, serials in update_dt_row_dict.items():
         print(f"\nDay: {day}")
         for serial in serials:
-            while True:
-                value = input(f"  Serial {serial}: ")
-                if value == "":
-                    print("  Skipped.")
-                    break
+            value = input(f"  Serial {serial}: ").strip()
+            if value == "":
+                print("  Skipped.")
+            else:
                 try:
                     update_dt_row_dict[day][serial] = float(value)
-                    break
                 except ValueError:
-                    print("  Invalid input. Please enter a number or press Enter to skip.")
+                    print("  Invalid input. Skipped.")
+    print("\nUpdate complete.")
     return update_dt_row_dict
+
 # =========================================================
 def transfer_updates(updated_dict, dt_row_dict):
     """
