@@ -52,8 +52,8 @@ def array_to_dt_row_dict(array):
 
     return dt_row_dict
 # =====================================================================
-# make_update_dt_row_dict
-def make_update_dt_row_dict(dt_row_dict, dvt):
+# update_dt_row_dict  Makes the empty dictionary to fill
+def make_blnk_update_row_dict(dt_row_dict, dvt):
     start_date, end_date = dvt
     update_row_dict = {}
 
@@ -63,5 +63,33 @@ def make_update_dt_row_dict(dt_row_dict, dvt):
 
     return update_row_dict
 
-# =========================================================================================
-
+# input function =========================================================================================
+def update_serial_values(update_dt_row_dict):
+    print("Enter a number for each serial, or press Enter twice to skip.\n")
+    for day, serials in update_dt_row_dict.items():
+        print(f"\nDay: {day}")
+        for serial in serials:
+            while True:
+                value = input(f"  Serial {serial}: ")
+                if value == "":
+                    print("  Skipped.")
+                    break
+                try:
+                    update_dt_row_dict[day][serial] = float(value)
+                    break
+                except ValueError:
+                    print("  Invalid input. Please enter a number or press Enter to skip.")
+    return update_dt_row_dict
+# =========================================================
+def transfer_updates(updated_dict, dt_row_dict):
+    """
+    Transfers non-empty values from updated_dict into dt_row_dict.
+    Assumes both dictionaries share the same structure: {day: {serial: value}}.
+    """
+    for day, serials in updated_dict.items():
+        if day not in dt_row_dict:
+            dt_row_dict[day] = {}  # Optionally scaffold missing day
+        for serial, value in serials.items():
+            if value != '':
+                dt_row_dict[day][serial] = value
+    return dt_row_dict
