@@ -63,21 +63,5 @@ def make_update_dt_row_dict(dt_row_dict, dvt):
 
     return update_row_dict
 
-# input function =========================================================================================
-def update_serial_values(update_dt_row_dict):
-    print("Enter a number for each serial, or press Enter twice to skip.\n")
-    for day, serials in update_dt_row_dict.items():
-        print(f"\nDay: {day}")
-        for serial in serials:
-            while True:
-                value = input(f"  Serial {serial}: ")
-                if value == "":
-                    print("  Skipped.")
-                    break
-                try:
-                    update_dt_row_dict[day][serial] = float(value)
-                    break
-                except ValueError:
-                    print("  Invalid input. Please enter a number or press Enter to skip.")
-    return update_dt_row_dict
+# =========================================================================================
 
