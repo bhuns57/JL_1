@@ -63,27 +63,96 @@ def make_blnk_update_row_dict(dt_row_dict, dvt):
     update_row_dict = blnk_update_dt_row_dict 
     return update_row_dict
 
-# input function =========================================================================================
-#Using the input function enter values to update to the update_row_dict to later change the storage dt_row_dish
-def update_serial_values(blnk_update_dt_row_dict):
-    update_dt_row_dict = blnk_update_dt_row_dict
-    print("Enter a number for each serial number s000.... , or press Enter to skip.\n")
-    for day, serials in update_dt_row_dict.items():
-        print(f"\nDay: {day}")
-        for serial in serials:
-            value = input(f"  Serial {serial}: ").strip()
-            if value == "":
-                print("  Skipped.")
-            else:
+# obolete becaue of a bug in jupyter lab input function 
+# =========================================================
+# DEF transpose lut from rows to cols
+def from sys_funcs import (csv_rows):
+    headers = csv_rows[0][1:]  # skip BOM or placeholder
+    col_dict = {}
+
+    for col_index, serial in enumerate(headers):
+        entry = {}
+        for row in csv_rows[1:]:
+            key = row[0].strip('"')  # remove quotes
+            value = row[col_index + 1].strip('"')
+            # Convert types if needed
+            if key in ['value', 'min', 'max', 'step']:
                 try:
-                    update_dt_row_dict[day][serial] = float(value)
+                    entry[key] = float(value) if '.' in value else int(value)
                 except ValueError:
-                    print("  Invalid input. Skipped.")
-    print("\nUpdate complete.")
- 
-    return update_dt_row_dict
+                    entry[key] = None
+            elif key == 'active':
+                entry[key] = value.lower() not in ['no', 'false', '0', '']
+            else:
+                entry[key] = value
+        col_dict[serial] = entry
+
+    return col_dict
 
 # =========================================================
+import ipywidgets as widgets
+from IPython.display import display, clear_output
+
+def update_values_with_config(blnk_update_dt_row_dict, lut_serial_config):
+    update_dt_row_dict = blnk_update_dt_row_dict.copy()
+    output = widgets.Output()
+    display(output)
+
+    def build_form():
+        with output:
+            clear_output()
+            print("Adjust sliders for each active supplement. Suspended ones are skipped.\n")
+            form_items = []
+            slider_widgets = {}
+
+            for day, serials in update_dt_row_dict.items():
+                day_label = widgets.HTML(value=f"<b>Day: {day}</b>")
+                form_items.append(day_label)
+
+                for serial in serials:
+                    config = lut_serial_config.get(serial, {})
+                    active = config.get('active', True)
+                    if str(active).lower() in ['no', 'false']:
+                        continue  # Skip suspended supplements
+
+                    name = config.get('name', serial)
+                    value = config.get('value', 1)
+                    min_val = config.get('min', 0)
+                    max_val = config.get('max', 10)
+                    step_val = config.get('step', 1)
+
+                    slider = widgets.FloatSlider(
+                        value=value,
+                        min=min_val,
+                        max=max_val,
+                        step=step_val,
+                        description=f"{name}:",
+                        style={'description_width': 'initial'},
+                        layout=widgets.Layout(width='400px')
+                    )
+                    slider_widgets[(day, serial)] = slider
+                    form_items.append(slider)
+
+            if not slider_widgets:
+                form_items.append(widgets.HTML(value="<i>No active supplements to update.</i>"))
+
+            submit_button = widgets.Button(description="Submit")
+            form_items.append(submit_button)
+            form = widgets.VBox(form_items)
+            display(form)
+
+            def on_submit(b):
+                for (day, serial), slider in slider_widgets.items():
+                    update_dt_row_dict[day][serial] = slider.value
+                clear_output()
+                print("✅ Update complete. Here's the result:")
+                print(update_dt_row_dict)
+
+            submit_button.on_click(on_submit)
+
+    build_form()
+# ========================================================================================
+
 def transfer_updates(updated_dict, dt_row_dict):
     """
     Transfers non-empty values from updated_dict into dt_row_dict.
@@ -96,3 +165,4 @@ def transfer_updates(updated_dict, dt_row_dict):
             if value != '':
                 dt_row_dict[day][serial] = value
     return dt_row_dict
+# ============ put values into the" blnk_update_dt_row_dict" ================================================
