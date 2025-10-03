@@ -60,10 +60,9 @@ def make_blnk_update_row_dict(dt_row_dict, dvt):
     for date_key in dt_row_dict:  # ✅ use dt_row_dict here
         if start_date <= date_key <= end_date:
             blnk_update_dt_row_dict [date_key] = {col: '' for col in dt_row_dict[date_key]}  # also fix xrow_dict if needed
-    update_row_dict = blnk_update_dt_row_dict 
-    return update_row_dict
-
-# obolete becaue of a bug in jupyter lab input function 
+#    update_row_dict = blnk_update_dt_row_dict 
+#    return update_row_dict
+    return blnk_update_row_dict
 # =========================================================
 
 # DEF transpose lut from rows to cols
@@ -96,56 +95,10 @@ import ipywidgets as widgets
 from IPython.display import display, clear_output
 import pickle
 
-def xupdate_values_with_config(blnk_update_dt_row_dict, lut_serial_config, pickle_path="update_result.pkl"):
-    update_dt_row_dict = {day: dict(serials) for day, serials in blnk_update_dt_row_dict.items()}
-    output = widgets.Output()
-    display(output)
 
-    form_items = []
-    slider_widgets = {}
-
-    for day, serials in update_dt_row_dict.items():
-        form_items.append(widgets.HTML(value=f"<b>Day: {day}</b>"))
-        for serial in serials:
-            config = lut_serial_config.get(serial, {})
-            if str(config.get('active', True)).lower() in ['no', 'false']:
-                continue
-            slider = widgets.FloatSlider(
-                value=config.get('value', 1),
-                min=config.get('min', 0),
-                max=config.get('max', 10),
-                step=config.get('step', 1) or 1,
-                description=f"{config.get('name', serial)}:",
-                layout=widgets.Layout(width='400px')
-            )
-            slider_widgets[(day, serial)] = slider
-            form_items.append(slider)
-
-    submit_button = widgets.Button(description="Submit")
-
-    def on_submit(b):
-        for (day, serial), slider in slider_widgets.items():
-            update_dt_row_dict[day][serial] = slider.value
-
-        with open(pickle_path, "wb") as f:
-            pickle.dump(update_dt_row_dict, f)
-
-        with output:
-            clear_output()
-            print("✅ Update complete. Result saved to pickle.")
-            print("📦 You can now retrieve it using `get_update_result()` in a new cell.")
-
-    submit_button.on_click(on_submit)
-    form_items.append(submit_button)
-    form = widgets.VBox(form_items)
-
-    with output:
-        clear_output()
-        print("Adjust sliders for each active supplement. Suspended ones are skipped.\n")
-        display(form)
 # ===================================================================================
 # Step 2: Retrieve the result in a separate cell for sliders
-def get_xupdate_result(pickle_path="update_result.pkl"):
+def get_update_dt_row_dict(pickle_path="update_dt_row_dict"):
     import pickle
     with open(pickle_path, "rb") as f:
         result = pickle.load(f)
