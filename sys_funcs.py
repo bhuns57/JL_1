@@ -65,8 +65,9 @@ def make_blnk_update_row_dict(dt_row_dict, dvt):
 
 # obolete becaue of a bug in jupyter lab input function 
 # =========================================================
+
 # DEF transpose lut from rows to cols
-def from sys_funcs import (csv_rows):
+def transpose_csv_to_col_dict(csv_rows):
     headers = csv_rows[0][1:]  # skip BOM or placeholder
     col_dict = {}
 
@@ -90,68 +91,74 @@ def from sys_funcs import (csv_rows):
     return col_dict
 
 # =========================================================
+# step 1 for sliders ✅ Final Pattern: Interactive Form + Pickle-Based Retrieval
 import ipywidgets as widgets
 from IPython.display import display, clear_output
+import pickle
 
-def update_values_with_config(blnk_update_dt_row_dict, lut_serial_config):
-    update_dt_row_dict = blnk_update_dt_row_dict.copy()
+def xupdate_values_with_config(blnk_update_dt_row_dict, lut_serial_config, pickle_path="update_result.pkl"):
+    update_dt_row_dict = {day: dict(serials) for day, serials in blnk_update_dt_row_dict.items()}
     output = widgets.Output()
     display(output)
 
-    def build_form():
+    form_items = []
+    slider_widgets = {}
+
+    for day, serials in update_dt_row_dict.items():
+        form_items.append(widgets.HTML(value=f"<b>Day: {day}</b>"))
+        for serial in serials:
+            config = lut_serial_config.get(serial, {})
+            if str(config.get('active', True)).lower() in ['no', 'false']:
+                continue
+            slider = widgets.FloatSlider(
+                value=config.get('value', 1),
+                min=config.get('min', 0),
+                max=config.get('max', 10),
+                step=config.get('step', 1) or 1,
+                description=f"{config.get('name', serial)}:",
+                layout=widgets.Layout(width='400px')
+            )
+            slider_widgets[(day, serial)] = slider
+            form_items.append(slider)
+
+    submit_button = widgets.Button(description="Submit")
+
+    def on_submit(b):
+        for (day, serial), slider in slider_widgets.items():
+            update_dt_row_dict[day][serial] = slider.value
+
+        with open(pickle_path, "wb") as f:
+            pickle.dump(update_dt_row_dict, f)
+
         with output:
             clear_output()
-            print("Adjust sliders for each active supplement. Suspended ones are skipped.\n")
-            form_items = []
-            slider_widgets = {}
+            print("✅ Update complete. Result saved to pickle.")
+            print("📦 You can now retrieve it using `get_update_result()` in a new cell.")
 
-            for day, serials in update_dt_row_dict.items():
-                day_label = widgets.HTML(value=f"<b>Day: {day}</b>")
-                form_items.append(day_label)
+    submit_button.on_click(on_submit)
+    form_items.append(submit_button)
+    form = widgets.VBox(form_items)
 
-                for serial in serials:
-                    config = lut_serial_config.get(serial, {})
-                    active = config.get('active', True)
-                    if str(active).lower() in ['no', 'false']:
-                        continue  # Skip suspended supplements
+    with output:
+        clear_output()
+        print("Adjust sliders for each active supplement. Suspended ones are skipped.\n")
+        display(form)
+# ===================================================================================
+# Step 2: Retrieve the result in a separate cell for sliders
+def get_xupdate_result(pickle_path="update_result.pkl"):
+    import pickle
+    with open(pickle_path, "rb") as f:
+        result = pickle.load(f)
+    print("📤 Retrieved result from pickle:")
+    return result
 
-                    name = config.get('name', serial)
-                    value = config.get('value', 1)
-                    min_val = config.get('min', 0)
-                    max_val = config.get('max', 10)
-                    step_val = config.get('step', 1)
 
-                    slider = widgets.FloatSlider(
-                        value=value,
-                        min=min_val,
-                        max=max_val,
-                        step=step_val,
-                        description=f"{name}:",
-                        style={'description_width': 'initial'},
-                        layout=widgets.Layout(width='400px')
-                    )
-                    slider_widgets[(day, serial)] = slider
-                    form_items.append(slider)
 
-            if not slider_widgets:
-                form_items.append(widgets.HTML(value="<i>No active supplements to update.</i>"))
 
-            submit_button = widgets.Button(description="Submit")
-            form_items.append(submit_button)
-            form = widgets.VBox(form_items)
-            display(form)
 
-            def on_submit(b):
-                for (day, serial), slider in slider_widgets.items():
-                    update_dt_row_dict[day][serial] = slider.value
-                clear_output()
-                print("✅ Update complete. Here's the result:")
-                print(update_dt_row_dict)
 
-            submit_button.on_click(on_submit)
 
-    build_form()
-# ========================================================================================
+#========================================================================================
 
 def transfer_updates(updated_dict, dt_row_dict):
     """
