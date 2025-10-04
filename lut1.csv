@@ -1,0 +1,6 @@
+﻿dvt,s000,s001,s002,s003,s004
+active_ tag,yes,no,yes,yes,yes
+filled_tag,no,no,yes,yes,no
+default_dose,1,4,2,3,1
+Previous dose,0,1,2,0,1
+name,vit  c ,vit  d,vit  e,vit  k ,vit  a
