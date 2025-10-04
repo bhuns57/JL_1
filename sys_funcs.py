@@ -12,6 +12,15 @@ import csv
 import os
 import sys
 import re
+# ==============================================
+def get_dtv_range():
+    try:
+        start_dtv = int(input("Enter beginning dtv: "))
+        end_dtv = int(input("Enter ending dtv: "))
+        return [start_dtv, end_dtv]
+    except ValueError:
+        print("Invalid input. Please enter integer values.")
+        return None
 #=======================================================
 def clean_wsl_path(raw_path):                            #  raw_path = "bnm.csv"
     """
