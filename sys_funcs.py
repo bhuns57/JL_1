@@ -114,12 +114,6 @@ def get_update_dt_row_dict(pickle_path="update_dt_row_dict"):
     print("📤 Retrieved result from pickle:")
     return result
 
-
-
-
-
-
-
 #========================================================================================
 
 def transfer_updates(updated_dict, dt_row_dict):
@@ -135,3 +129,51 @@ def transfer_updates(updated_dict, dt_row_dict):
                 dt_row_dict[day][serial] = value
     return dt_row_dict
 # ============ put values into the" blnk_update_dt_row_dict" ================================================
+#==================================================================
+
+def universal_import(folder_path, pattern="*", expected_columns=None, df_name=None, verbose=True):
+    folder = Path(folder_path)
+    if not folder.exists():
+        raise FileNotFoundError(f"Folder not found: {folder_path}")
+    
+    file_list = list(folder.glob(pattern))
+    dfs = []
+    
+    for f in file_list:
+        for encoding in ['utf-8', 'ISO-8859-1']:
+            try:
+                if f.suffix in ['.xlsx', '.xls']:
+                    df = pd.read_excel(f)
+                else:
+                    df = pd.read_csv(f, encoding=encoding, sep=None, engine='python')
+                
+                if expected_columns and df.shape[1] != expected_columns:
+                    if verbose:
+                        print(f"⚠️ Skipped {f.name}: expected {expected_columns} columns, got {df.shape[1]}")
+                    break
+                
+                df['source_file'] = f.name
+                df['encoding_used'] = encoding
+                dfs.append(df)
+                if verbose:
+                    print(f"✅ Loaded {f.name} with {encoding}")
+                break
+            except Exception as e:
+                if encoding == 'ISO-8859-1' and verbose:
+                    print(f"❌ Skipped {f.name}: {e}")
+    
+    if dfs:
+        combined = pd.concat(dfs, ignore_index=True)
+        label = df_name if df_name else "imported_dataframe"
+        pickle_path = Path.cwd() / f"{label}.pkl"
+        combined.to_pickle(pickle_path)
+        if verbose:
+            print(f"✅ [{label}] Final DataFrame: {len(combined)} rows from {len(dfs)} files.")
+            print(f"💾 Saved to pickle: {pickle_path}")
+        return combined
+    else:
+        if verbose:
+            print("🚫 No valid files loaded.")
+        return pd.DataFrame()
+
+###_adding [iclel save]
