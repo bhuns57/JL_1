@@ -13,6 +13,66 @@ import os
 import sys
 import re
 # ==============================================
+from pathlib import Path
+import pandas as pd
+import os
+# ======================================================================================
+def load_dataframes_from_folder(folder_path, extension=".csv", encoding="utf-8", use_full_path=False):
+    """
+    Recursively loads all files with the given extension from a folder into pandas DataFrames.
+
+    Args:
+        folder_path (str): Windows-style path to the folder.
+        extension (str): File extension to search for (e.g., ".csv", ".txt").
+        encoding (str): Encoding used to read the files.
+        use_full_path (bool): If True, keys will be full paths; otherwise, just filenames.
+
+    Returns:
+        dict: Dictionary of DataFrames keyed by filename or full path.
+    """
+    # Convert Windows path to WSL format if needed
+    if os.name != "nt":  # If running in WSL/Linux
+        folder_path = folder_path.replace("\\", "/")
+        if folder_path.startswith("/mnt/") is False:
+            drive_letter = folder_path[0].lower()
+            folder_path = f"/mnt/{drive_letter}{folder_path[2:]}"
+    
+    folder = Path(folder_path)
+
+    # Recursively find all matching files
+    files = list(folder.rglob(f"*{extension}"))
+
+    if not files:
+        print(f"⚠️ No files with extension '{extension}' found in {folder_path}")
+        return {}
+
+    # Load each file into a DataFrame
+    dataframes = {}
+    for file in files:
+        try:
+            df = pd.read_csv(file, encoding=encoding) if extension == ".csv" else pd.read_table(file, encoding=encoding)
+            key = str(file) if use_full_path else file.name
+            dataframes[key] = df
+        except Exception as e:
+            print(f"❌ Failed to load {file}: {e}")
+
+    return dataframes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#=====================================================================
 def get_dtv_range():
     try:
         start_dtv = int(input("Enter beginning dtv: "))
