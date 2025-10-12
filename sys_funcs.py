@@ -16,7 +16,37 @@ import re
 from pathlib import Path
 import pandas as pd
 import os
+# ================================================================================
+def get_filename_frm_sn(dts, sn):
+    """
+    Retrieves the filename and full path for a given serial number from an enriched DataFrame dictionary.
+
+    Args:
+        dts (dict): Dictionary where each value is a dict with keys 'name', 'df', and 'serial'.
+        sn (int): Serial number to look up.
+
+    Returns:
+        tuple: (filename, full_path) if found, else (None, None)
+    """
+    for path, entry in dts.items():
+        if entry.get("serial") == sn:
+            return entry.get("name"), path
+    return None, None
+
+
+
+
+
+
+
+
+
+
+
+
 # ======================================================================================
+#  ============ add r for single slashes ie folder = r"C:\Users\bhuns\OneDrive\___Health Data\__DD studies\InBody CSV\ib97"
+
 def load_dataframes_from_folder(folder_path, extension=".csv", encoding="utf-8", use_full_path=False):
     """
     Recursively loads all files with the given extension from a folder into pandas DataFrames.
